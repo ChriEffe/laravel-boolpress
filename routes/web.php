@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Ruote::middleware('auth')
+Route::middleware('auth')
 ->namespace('Admin')
 ->name('admin.')
 ->prefix('admin')
