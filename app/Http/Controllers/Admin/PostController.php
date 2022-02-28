@@ -28,7 +28,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        return view('admin.posts.create', ['title' => 'Create New Posts']);
     }
 
     /**
@@ -74,7 +74,12 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        dd($post);
+        $data = [
+            'post' => $post,
+            'title' => $post->title
+        ];
+
+        return view('admin.posts.show', $data);
     }
 
     /**

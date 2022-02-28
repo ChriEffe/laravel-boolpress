@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('documentTitle')
-    {{-- {{ $title }} --}}
+    {{ $title }}
 @endsection
 
 @section('content')
