@@ -93,9 +93,9 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        return view('admin.posts.edit', ['post' => $post]);
     }
 
     /**
@@ -105,9 +105,16 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        $data = $request->all();
+        $updated = $post->update($data);
+
+        if (!$updated) {
+            dd('Update non riuscito');
+        }
+
+        return redirect()->route('admin.posts.show', $post->id)->with('status', "Post $post->title Saved");
     }
 
     /**
