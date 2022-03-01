@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Illuminate\Support\Str;
-
+use Illuminate\Support\Facades\Auth;
 use App\Model\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -44,12 +44,13 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        $data = $request->all();
+        $data['user_id'] = Auth::user()->id;
+
         $validateData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
         ]);
-
-        $data = $request->all();
 
         $slug = Str::slug($data['title'], '-');
         $postPresente = Post::where('slug', $slug)->first();
