@@ -12,7 +12,7 @@
             </div>
         </div>
         <div class="row">
-            <form action="{{ route('admin.posts.update', $post->id) }}" method="post">
+            <form action="{{ route('admin.posts.update', $post->slug) }}" method="post">
                 @csrf
                 @method('PATCH')
                 <div class="mb-3">

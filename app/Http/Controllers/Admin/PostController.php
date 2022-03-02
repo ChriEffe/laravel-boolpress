@@ -52,24 +52,12 @@ class PostController extends Controller
             'content' => 'required',
         ]);
 
-        $slug = Str::slug($data['title'], '-');
-        $postPresente = Post::where('slug', $slug)->first();
+        $post = new Post();
+        $post->fill($data);
+        $post->slug = $post->createSlug($data['title']);
+        $post->save();
 
-
-        $counter = 0;
-        while ($postPresente) {
-            $slug = $slug . '-' . $counter;
-            $postPresente = Post::where('slug', $slug)->first();
-            $counter++;
-        }
-
-        $newPost = new Post();
-
-        $newPost->fill($data);
-        $newPost->slug = $slug;
-        $newPost->save();
-
-        return redirect()->route('admin.posts.show', ['post' => $newPost]);
+        return redirect()->route('admin.posts.show', $post->slug);
     }
 
     /**
@@ -115,7 +103,7 @@ class PostController extends Controller
             dd('Update non riuscito');
         }
 
-        return redirect()->route('admin.posts.show', $post->id)->with('status', "Post $post->title Saved");
+        return redirect()->route('admin.posts.show', $post->slug)->with('status', "Post $post->title Saved");
     }
 
     /**

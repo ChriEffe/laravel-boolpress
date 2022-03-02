@@ -34,8 +34,8 @@
                             <td>{{ $post->title }}</td>
                             <td>{{ $post->content }}</td>
                             <td>
-                                <a class="btn btn-primary" href="{{ route('admin.posts.show', $post) }}">View</a>
-                                <a class="btn btn-primary" href="{{ route('admin.posts.edit', $post) }}">Edit</a>
+                                <a class="btn btn-primary" href="{{ route('admin.posts.show', $post->slug) }}">View</a>
+                                <a class="btn btn-primary" href="{{ route('admin.posts.edit', $post->slug) }}">Edit</a>
                                 <form action="{{ route('admin.posts.destroy', $post->id) }}" method="post">
                                     @csrf
                                     @method('DELETE')
