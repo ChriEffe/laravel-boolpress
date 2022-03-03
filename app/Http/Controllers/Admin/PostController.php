@@ -51,6 +51,7 @@ class PostController extends Controller
         $validateData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
+            'category_id' => 'exists:App\Model\Category,id'
         ]);
 
         $post = new Post();
