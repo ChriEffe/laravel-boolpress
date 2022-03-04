@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Model\Tag;
 use App\Model\Category;
 use Illuminate\Support\Facades\Auth;
 use App\Model\Post;
@@ -34,7 +35,8 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.posts.create', ['categories' => $categories]);
+        $tags = Tag::all();
+        return view('admin.posts.create', ['categories' => $categories, 'tags' => $tags]);
     }
 
     /**
@@ -51,13 +53,18 @@ class PostController extends Controller
         $validateData = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
-            'category_id' => 'exists:App\Model\Category,id'
+            'category_id' => 'exists:App\Model\Category,id',
+            'tags.*' => 'nullable|exists:App\Model\Tag,id'
         ]);
 
         $post = new Post();
         $post->fill($data);
         $post->slug = $post->createSlug($data['title']);
         $post->save();
+
+        if (!empty($data['tags'])) {
+            $post->tags()->attach($data['tags']);
+        }
 
         return redirect()->route('admin.posts.show', $post->slug);
     }
@@ -89,6 +96,7 @@ class PostController extends Controller
         if (Auth::user()->id != $post->user_id) {
             abort('403');
         }
+
         $categories = Category::all();
         $tags = Tag::all();
         return view('admin.posts.edit', ['post' => $post, 'categories' => $categories, 'tags' => $tags]);
@@ -103,7 +111,6 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        {
         $data = $request->all();
         if (Auth::user()->id != $post->user_id) {
             abort('403');
@@ -129,7 +136,14 @@ class PostController extends Controller
         if ($data['category_id'] != $post->category_id) {
             $post->category_id = $data['category_id'];
         }
-    }
+
+        $post->update();
+
+        if (!empty($data['tags'])) {
+            $post->tags()->sync($data['tags']);
+        } else {
+            $post->tags()->detach();
+        }
 
         return redirect()->route('admin.posts.show', $post);
     }
@@ -142,8 +156,13 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
+        if (Auth::user()->id != $post->user_id) {
+            abort('403');
+        }
+
+        $post->tags()->detach();
         $post->delete();
 
-        return redirect()->route('admin.posts.index')->with('status', "$post->title - id $post->id Deleted");
+        return redirect()->route('admin.posts.index')->with('status', "Post id $post->id deleted");
     }
 }
