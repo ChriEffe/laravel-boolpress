@@ -86,7 +86,12 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        return view('admin.posts.edit', ['post' => $post]);
+        if (Auth::user()->id != $post->user_id) {
+            abort('403');
+        }
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('admin.posts.edit', ['post' => $post, 'categories' => $categories, 'tags' => $tags]);
     }
 
     /**
@@ -98,14 +103,35 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        {
         $data = $request->all();
-        $updated = $post->update($data);
-
-        if (!$updated) {
-            dd('Update non riuscito');
+        if (Auth::user()->id != $post->user_id) {
+            abort('403');
         }
 
-        return redirect()->route('admin.posts.show', $post->slug)->with('status', "Post $post->title Saved");
+
+        $postValidate = $request->validate(
+            [
+                'title' => 'required|max:240',
+                'content' => 'required',
+                'category_id' => 'exists:App\Model\Category,id',
+                'tags.*' => 'nullable|exists:App\Model\Tag,id'
+            ]
+        );
+
+        if ($data['title'] != $post->title) {
+            $post->title = $data['title'];
+            $post->slug = $post->createSlug($data['title']);
+        }
+        if ($data['content'] != $post->content) {
+            $post->content = $data['content'];
+        }
+        if ($data['category_id'] != $post->category_id) {
+            $post->category_id = $data['category_id'];
+        }
+    }
+
+        return redirect()->route('admin.posts.show', $post);
     }
 
     /**

@@ -16,6 +16,20 @@
                 @csrf
                 @method('PATCH')
                 <div class="mb-3">
+                    <select class="form-select" name="category_id">
+                        <option value="">Select category</option>
+                        @foreach ($categories as $category)
+                            <option @if (old('category_id', $post->category_id) == $category->id) selected @endif value="{{ $category->id }}">
+                                {{ $category->name }} - {{ $category->id }}</option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <div class="alert alert-danger mt-3">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                <div class="mb-3">
                     <label for="title" class="form-label">Title Posts</label>
                     <input type="text" value="{{ $post->title }}" class="form-control" id="title" name="title">
                 </div>
