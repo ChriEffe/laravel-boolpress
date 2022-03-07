@@ -19,12 +19,8 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::paginate(10);
-        $data = [
-            'posts' => $posts,
-            'title' => 'Posts Home'
-        ];
 
-        return view('admin.posts.index', $data);
+        return view('admin.posts.index', ['posts' => $posts]);
     }
 
     /**
@@ -50,7 +46,7 @@ class PostController extends Controller
         $data = $request->all();
         $data['user_id'] = Auth::user()->id;
 
-        $validateData = $request->validate([
+        $postValidate = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
             'category_id' => 'exists:App\Model\Category,id',
@@ -77,12 +73,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        $data = [
-            'post' => $post,
-            'title' => $post->title
-        ];
-
-        return view('admin.posts.show', $data);
+        return view('admin.posts.show', ['post' => $post]);
     }
 
     /**

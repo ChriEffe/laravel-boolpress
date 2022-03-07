@@ -1,9 +1,5 @@
 @extends('layouts.admin')
 
-@section('documentTitle')
-    {{ $title }}
-@endsection
-
 @section('content')
     @if (session('status'))
         <div class="alert alert-success">
@@ -31,9 +27,8 @@
                     <tbody>
                         @foreach ($posts as $post)
                             <tr>
-                                <td>{{ $post->id }}</td>
                                 <td>{{ $post->title }}</td>
-                                <td>{{ $post->category_id }}</td>
+                                <td>{{ $post->category->name }}</td>
                                 <td>
                                     @foreach ($post->tags()->get() as $tag)
                                         {{ $tag->name }}
@@ -56,27 +51,6 @@
                                 </td>
                             </tr>
                         @endforeach
-                            <tr>
-                                <td>{{ $post->id }}</td>
-                                <td>{{ $post->title }}</td>
-                                <td>{{ $post->category_id }}</td>
-                                <td>{{ $post->created_at }}</td>
-                                <td>{{ $post->updated_at }}</td>
-                                <td><a class="btn btn-primary"
-                                        href="{{ route('admin.posts.show', $post->slug) }}">View</a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-info"
-                                        href="{{ route('admin.posts.edit', $post->slug) }}">Modify</a>
-                                </td>
-                                <td>
-                                    <form action="{{ route('admin.posts.destroy', $post) }}" method="post">
-                                        @csrf
-                                        @method('DELETE')
-                                        <input class="btn btn-danger" type="submit" value="Delete">
-                                    </form>
-                                </td>
-                            </tr>
                     </tbody>
                 </table>
             </div>
