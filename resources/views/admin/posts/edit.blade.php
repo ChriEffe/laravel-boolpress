@@ -61,10 +61,35 @@
                 <div class="mb-3">
                     <label for="title" class="form-label">Title Posts</label>
                     <input type="text" value="{{ $post->title }}" class="form-control" id="title" name="title">
+                    @error('title')
+                        <div class="alert alert-danger mt-3">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
                 <div class="mb-3">
                     <label for="content" class="form-label">Content</label>
                     <input type="text" value="{{ $post->content }}" class="form-control" id="content" name="content">
+                    @error('content')
+                        <div class="alert alert-danger mt-3">
+                            {{ $message }}
+                        </div>
+                    @enderror
+                </div>
+                @if (!empty($post->image))
+                    <div class="mb-3">
+                        <img class="img-fluid" src="{{ asset('storage/' . $post->image) }}"
+                            alt="{{ $post->title }}">
+                    </div>
+                @endif
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input class="form-control" type="file" id="image" name="image">
+                    @error('image')
+                        <div class="alert alert-danger mt-3">
+                            {{ $message }}
+                        </div>
+                    @enderror
                 </div>
                 <button type="submit" class="btn btn-primary">Save</button>
             </form>
