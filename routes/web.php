@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('guest.index');
+// Route::get('/', function () {
+//     return view('welcome');
+// })->name('guest.index');
 
 Auth::routes();
 
@@ -29,3 +29,7 @@ Route::middleware('auth')
     Route::get('/categories/{category}', 'CategoryController@show')->name('categories.show');
     Route::resource('posts', 'PostController');
 });
+
+Route::get('{any?}', function ($name = null) {
+    return view('guest.welcome');
+})->where('any', '.*')->name('guest.index');
