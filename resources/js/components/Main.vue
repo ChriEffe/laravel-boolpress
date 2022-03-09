@@ -33,7 +33,7 @@ import Axios from "axios"
             }
         },
         created(){
-            this.getPosts('http://127.0.0.1:8001/api/posts');
+            this.getPosts('http://127.0.0.1:8000/api/posts');
         },
         methods: {
             changePage(vs) {
