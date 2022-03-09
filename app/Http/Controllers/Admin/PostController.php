@@ -24,6 +24,13 @@ class PostController extends Controller
         return view('admin.posts.index', ['posts' => $posts]);
     }
 
+    public function indexUser()
+    {
+        $posts = Post::where('user_id', Auth::user()->id)->orderBy('created_at', 'desc')->paginate(20);
+
+        return view('admin.posts.index', ['posts' => $posts]);
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -44,9 +51,6 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::user()->id;
-
         $postValidate = $request->validate([
             'title' => 'required|max:255',
             'content' => 'required',
@@ -55,8 +59,10 @@ class PostController extends Controller
             'image' => 'nullable|image'
         ]);
 
+        $data = $request->all();
+        $data['user_id'] = Auth::user()->id;
+
         if (!empty($data['image'])) {
-            Storage::delete($post->image);
             $img_path = Storage::put('uploads', $data['image']);
             $data['image'] = $img_path;
         }
@@ -92,9 +98,9 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        // if (Auth::user()->id != $post->user_id) {
-        //     abort('403');
-        // }
+        if (Auth::user()->id != $post->user_id) {
+            abort('403');
+        }
 
         $categories = Category::all();
         $tags = Tag::all();
@@ -110,10 +116,10 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        // $data = $request->all();
-        // if (Auth::user()->id != $post->user_id) {
-        //     abort('403');
-        // }
+        $data = $request->all();
+        if (Auth::user()->id != $post->user_id) {
+            abort('403');
+        }
 
 
         $postValidate = $request->validate(
@@ -121,9 +127,17 @@ class PostController extends Controller
                 'title' => 'required|max:240',
                 'content' => 'required',
                 'category_id' => 'exists:App\Model\Category,id',
-                'tags.*' => 'nullable|exists:App\Model\Tag,id'
+                'tags.*' => 'nullable|exists:App\Model\Tag,id',
+                'image' => 'nullable|image'
             ]
         );
+
+        if (!empty($data['image'])) {
+            Storage::delete($post->image);
+
+            $img_path = Storage::put('uploads', $data['image']);
+            $post->image = $img_path;
+        }
 
         if ($data['title'] != $post->title) {
             $post->title = $data['title'];
@@ -155,9 +169,9 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        // if (Auth::user()->id != $post->user_id) {
-        //     abort('403');
-        // }
+        if (Auth::user()->id != $post->user_id) {
+            abort('403');
+        }
 
         $post->tags()->detach();
         $post->delete();
