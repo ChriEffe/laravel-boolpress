@@ -12,12 +12,13 @@
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
-                <li class="nav-item"  
-                    v-for="(item) in menuItems"
-                    :key="item.id"
-                    >
-                    <a class="nav-link" :href="item.link">{{ item.label }}</a>
-                </li>
+                    <li class="nav-item"  
+                        v-for="(item) in menuItems"
+                        :key="item.id"
+                        >
+                        <!-- <a class="nav-link" :href="item.link">{{ item.label }}</a> -->
+                        <router-link class="nav-link" :to="{ name: item.routeName}">{{ item.label }}</router-link>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -32,29 +33,20 @@
                 logo: require('../../img/default.png'),
                 menuItems: [
                     {
-                        label: 'Item 1',
-                        link: '#',
-                        id: 1,
+                        label: 'Home',
+                        routeName: 'home'
                     },
                     {
-                        label: 'Item 2',
-                        link: '#',
-                        id: 2,
+                        label: 'Posts',
+                        routeName: 'posts'
                     },
                     {
-                        label: 'Item 3',
-                        link: '#',
-                        id: 3
+                        label: 'Chi siamo',
+                        routeName: 'about'
                     },
                     {
-                        label: 'Item 4',
-                        link: '#',
-                        id: 4,
-                    },
-                    {
-                        label: 'Item 5',
-                        link: '#',
-                        id: 5,
+                        label: 'Contatti',
+                        routeName: 'contacts'
                     }
                 ],
             }

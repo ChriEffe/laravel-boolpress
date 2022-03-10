@@ -53,7 +53,6 @@ const router = new VueRouter({
             name: 'contacts',
             component: Contacts
         },
-
     ]
 })
 
